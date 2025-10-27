@@ -50,4 +50,48 @@ router.post("/", validateInformations, (req, res) => {
   res.status(201).json(newPlant);
 });
 
+router.put("/:id", validateID, validateInformations, (req, res) => {
+  const { id } = req.params;
+  const numID = Number(id)
+  const { name, origin, water, light, toxic } = req.body;
+  const plantIndex = plantList.findIndex(p => p.id === numID)
+
+  const updatedPlant = {
+    id: numID,
+    name,
+    origin,
+    water,
+    light,
+    toxic,
+  };
+
+  plantList[plantIndex] = updatedPlant;
+  res.json(updatedPlant);
+});
+
+router.patch("/:id", validateID, (req, res) => {
+  const { id } = req.params;
+  const numID = Number(id)
+  const plantIndex = plantList.findIndex(p => p.id === numID)
+
+  const existingPlant = plantList[plantIndex];
+  const updatedData = req.body;
+
+  const updatedPlant = {
+    ...existingPlant,
+    ...updatedData,
+    id: numID,
+  };
+
+  plantList[plantIndex] = updatedPlant;
+  res.json(updatedPlant);
+});
+
+router.delete("/:id", validateID, (req, res) => {
+  const { id } = req.params;
+  const numID = Number(id)
+  plantList = plantList.filter(p => p.id !== numID)
+  res.status(204).send();
+});
+
 export default router;
